@@ -517,9 +517,9 @@
 
     private void TimerElapsed(object sender, System.Timers.ElapsedEventArgs e)
     {
-        setTokenPrice();
+        //setTokenPrice();
 
-        InvokeAsync(StateHasChanged);
+        //InvokeAsync(StateHasChanged);
     }
 
     private void Timer2Elapsed(object sender, System.Timers.ElapsedEventArgs e)
@@ -537,7 +537,7 @@
 
     private void setTokenPrice()
     {
-        Tuple<double, bool> priceInfo = coinInfo.GetTokenPrice();
+        Tuple<double, bool> priceInfo = coinInfo.GetClassCoinPrice();
         tokenPrice = priceInfo.Item1;
         positiveChange = priceInfo.Item2;
     }

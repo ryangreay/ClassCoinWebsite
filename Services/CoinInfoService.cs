@@ -20,9 +20,13 @@ namespace CoinSite.Services
         //TRANSACTION INFO
         protected List<Transaction> transactions = new List<Transaction>();
 
+        //COIN PRICES
+        protected Tuple<double, bool> classcoinPrice;
+
         public CoinInfoService()
         {
             transactions = GetDonationTransfers();
+            classcoinPrice = GetTokenPrice();
         }
 
         public List<Transaction> GetDonationTransfers()
@@ -59,13 +63,6 @@ namespace CoinSite.Services
             }
 
             return etherprice;
-        }
-
-        public double GetEthereumRaised()
-        {
-            double raisedAmount = GetScholarShipAmericaRaised() + GetSaveTheChildrenRaised() + GetDonorsChooseRaised();
-
-            return raisedAmount;
         }
 
         //positve 24 hr percent change makes the price green -> Tuple(price, positive 24hr change)
@@ -110,6 +107,13 @@ namespace CoinSite.Services
             return walletAmount;
         }
 
+        public double GetEthereumRaised()
+        {
+            double raisedAmount = GetScholarShipAmericaRaised() + GetSaveTheChildrenRaised() + GetDonorsChooseRaised();
+
+            return raisedAmount;
+        }
+
         public double GetSaveTheChildrenRaised()
         {
             double totals = transactions.Where(val => val.to_address == saveTheChildrenAddress.ToLower()).Sum(val => (val.value * 0.000000000000000001));
@@ -126,6 +130,11 @@ namespace CoinSite.Services
         {
             double totals = transactions.Where(val => val.to_address == scholarshipAddress.ToLower()).Sum(val => (val.value * 0.000000000000000001));
             return totals;
+        }
+
+        public Tuple<double, bool> GetClassCoinPrice()
+        {
+            return classcoinPrice;
         }
     }
 }
