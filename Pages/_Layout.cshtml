@@ -1,0 +1,122 @@
+﻿@using Microsoft.AspNetCore.Components.Web
+@namespace CoinSite.Pages
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="icon" href="~/images/classcoin_logo.png">
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <base href="~/" />
+    <link rel="stylesheet" href="css/bootstrap/bootstrap.min.css" />
+    <link href="css/site.css" rel="stylesheet" />
+    <link href="CoinSite.styles.css" rel="stylesheet" />
+    <component type="typeof(HeadOutlet)" render-mode="ServerPrerendered" />
+</head>
+<body style="background-color:#F9F7F0">
+    @RenderBody()
+
+    <div id="blazor-error-ui">
+        <environment include="Staging,Production">
+            An error has occurred. This application may no longer respond until reloaded.
+        </environment>
+        <environment include="Development">
+            An unhandled exception has occurred. See browser dev tools for details.
+        </environment>
+        <a href="" class="reload">Reload</a>
+        <a class="dismiss">🗙</a>
+    </div>
+    <script src="js/Chart.min.js"></script>
+    <script>
+        function BlazorScrollToId(id) {
+            const element = document.getElementById(id);
+            if (element instanceof HTMLElement) {
+                element.scrollIntoView({
+                    behavior: "smooth",
+                    block: "start",
+                    inline: "nearest"
+                });
+            }
+        }
+
+        Chart.defaults.RoundedDoughnut = Chart.helpers.clone(Chart.defaults.doughnut);
+        Chart.controllers.RoundedDoughnut = Chart.controllers.doughnut.extend({
+            draw: function(ease) {
+                var ctx           = this.chart.ctx;
+                var easingDecimal = ease || 1;
+                var arcs          = this.getMeta().data;
+                Chart.helpers.each(arcs, function(arc, i) {
+                    arc.transition(easingDecimal).draw();
+
+                    var pArc   = arcs[i === 0 ? arcs.length - 1 : i - 1];
+                    var pColor = pArc._view.backgroundColor;
+
+                    var vm         = arc._view;
+                    var radius     = (vm.outerRadius + vm.innerRadius) / 2;
+                    var thickness  = (vm.outerRadius - vm.innerRadius) / 2;
+                    var startAngle = Math.PI - vm.startAngle - Math.PI / 2;
+                    var angle      = Math.PI - vm.endAngle - Math.PI / 2;
+
+                    ctx.save();
+                    ctx.translate(vm.x, vm.y);
+
+                    ctx.fillStyle = i === 0 ? vm.backgroundColor : pColor;
+                    ctx.beginPath();
+                    ctx.arc(radius * Math.sin(startAngle), radius * Math.cos(startAngle), thickness, 0, 2 * Math.PI);
+                    ctx.fill();
+
+                    ctx.fillStyle = vm.backgroundColor;
+                    ctx.beginPath();
+                    ctx.arc(radius * Math.sin(angle), radius * Math.cos(angle), thickness, 0, 2 * Math.PI);
+                    ctx.fill();
+
+                    ctx.restore();
+                });
+            }
+        });
+
+        function createDonutChart(elementId, labels, data) {
+            var ctx = document.getElementById(elementId).getContext('2d');
+            var donutChart = new Chart(ctx, {
+                type: 'RoundedDoughnut',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        data: data,
+                        backgroundColor: [
+                            '#CB4C4E',
+                            '#3B719F',
+                            '#E0D268'
+                        ],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    tooltips: {
+                        callbacks: {
+                            label: function(tooltipItem, data) {
+                                return data['labels'][tooltipItem['index']];
+                            }
+                        }
+                    },
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutoutPercentage: 75,
+                    legend: {
+                        position: 'left',
+                        labels: {
+                            boxWidth: 10,
+                            fontStyle: 'italic',
+                            fontColor: '#aaa',
+                            usePointStyle: true,
+                        }
+                    },
+                }
+            });
+        }
+    </script>
+    
+    <script src="_framework/blazor.server.js"></script>
+</body>
+</html>

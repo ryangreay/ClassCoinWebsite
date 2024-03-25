@@ -1,0 +1,30 @@
+﻿@using Services
+
+@inject IJSRuntime JSRuntime
+@inject CoinInfoService coinInfo
+
+<canvas id="donutChartMobile"></canvas>
+
+@code {
+    private string[] labels = new[] { "Save The Children", "Donors Choose", "Scholarship America" };
+    private double[] data;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        double ethereumPrice = coinInfo.GetEthereumPrice();
+        double saveTheChild = Math.Round(coinInfo.GetSaveTheChildrenRaised() * ethereumPrice, MidpointRounding.AwayFromZero);
+        double donorsChoose = Math.Round(coinInfo.GetDonorsChooseRaised() * ethereumPrice, MidpointRounding.AwayFromZero);
+        double scholarship = Math.Round(coinInfo.GetScholarShipAmericaRaised() * ethereumPrice, MidpointRounding.AwayFromZero);
+
+        data = new[] { saveTheChild, donorsChoose, scholarship };
+
+        labels[0] += " $" + saveTheChild;
+        labels[1] += " $" + donorsChoose;
+        labels[2] += " $" + scholarship;
+
+        if (firstRender)
+        {
+            await JSRuntime.InvokeVoidAsync("createDonutChart", "donutChartMobile", labels, data);
+        }
+    }
+}
