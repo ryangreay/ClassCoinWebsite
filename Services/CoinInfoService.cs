@@ -31,11 +31,11 @@ namespace CoinSite.Services
 
         public List<Transaction> GetDonationTransfers()
         {
-            HttpClient client = new HttpClient { BaseAddress = new Uri(@"https://deep-index.moralis.io/") };
+            HttpClient client = new HttpClient { BaseAddress = new Uri(@"https://api.etherscan.io/") };
             client.DefaultRequestHeaders.Accept.Clear();
             client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
-            client.DefaultRequestHeaders.Add("X-API-Key", moralisAPIKey);
-            var httpResponse = client.GetAsync("api/v2.2/" + donationWalletAddress + "?chain=eth&order=DESC").Result;
+            //client.DefaultRequestHeaders.Add("X-API-Key", moralisAPIKey);
+            var httpResponse = client.GetAsync("api?module=account&action=txlist&address=" + donationWalletAddress + "&startblock=19512236&endblock=99999999&apikey=" + etherscanAPIKey).Result;
             List<Transaction> donationTransfers = new List<Transaction>();
 
             if (httpResponse.IsSuccessStatusCode)
@@ -89,24 +89,6 @@ namespace CoinSite.Services
             return new Tuple<double, bool>(tokenPrice, positiveChange);
         }
 
-        public double GetWalletTaxBalance()
-        {
-            double walletAmount = 0.0;
-
-            HttpClient client = new HttpClient { BaseAddress = new Uri(@"https://api.etherscan.io/") };
-            var httpResponse = client.GetAsync(@"api?module=account&action=tokenbalance&contractaddress=" + coinAddress + "&address=" + donationWalletAddress + "&tag=latest&apikey=" + etherscanAPIKey).Result;
-
-            if (httpResponse.IsSuccessStatusCode)
-            {
-                string result = httpResponse.Content.ReadAsStringAsync().Result;
-                var obj = JsonConvert.DeserializeObject(result);
-                JObject data = JObject.Parse(obj.ToString());
-                walletAmount = data["result"].ToString() == "0" ? 0 : Convert.ToDouble(data["result"].ToString().Insert(data["result"].ToString().Length - 18, "."));
-            }
-
-            return walletAmount;
-        }
-
         public double GetEthereumRaised()
         {
             double raisedAmount = GetScholarShipAmericaRaised() + GetSaveTheChildrenRaised() + GetDonorsChooseRaised();
@@ -116,19 +98,19 @@ namespace CoinSite.Services
 
         public double GetSaveTheChildrenRaised()
         {
-            double totals = transactions.Where(val => val.to_address == saveTheChildrenAddress.ToLower()).Sum(val => (val.value * 0.000000000000000001));
+            double totals = transactions.Where(val => val.to == saveTheChildrenAddress.ToLower()).Sum(val => (val.value * 0.000000000000000001));
             return totals;
         }
 
         public double GetDonorsChooseRaised()
         {
-            double totals = transactions.Where(val => val.to_address == donorsChooseAddress.ToLower()).Sum(val => (val.value * 0.000000000000000001));
+            double totals = transactions.Where(val => val.to == donorsChooseAddress.ToLower()).Sum(val => (val.value * 0.000000000000000001));
             return totals;
         }
 
         public double GetScholarShipAmericaRaised()
         {
-            double totals = transactions.Where(val => val.to_address == scholarshipAddress.ToLower()).Sum(val => (val.value * 0.000000000000000001));
+            double totals = transactions.Where(val => val.to == scholarshipAddress.ToLower()).Sum(val => (val.value * 0.000000000000000001));
             return totals;
         }
 

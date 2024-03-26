@@ -223,7 +223,7 @@
         <div class="coin-card">
             <div class="row mb-3 mt-3" >
                 <span style="font-size:35px;font-family:tt chocolate bold; text-transform:uppercase" class="@(positiveChange ? "header-color" : "danger-color")">
-                    @("$" + Math.Round(tokenPrice, 4, MidpointRounding.AwayFromZero).ToString())
+                    @("$" + tokenPrice.ToString("0.00"))
                 </span>
             </div>
             <div class="row">
