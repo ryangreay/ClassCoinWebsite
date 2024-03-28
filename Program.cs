@@ -2,7 +2,8 @@ using CoinSite.Data;
 using CoinSite.Services;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
-
+using GoogleCaptchaComponent;
+using GoogleCaptchaComponent.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,6 +12,12 @@ builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 builder.Services.AddScoped<CoinInfoService>();
 builder.Services.AddScoped<ClipboardService>();
+builder.Services.AddGoogleCaptcha(configuration =>
+{
+    configuration.ServerSideValidationRequired = true;
+    configuration.SiteKey = "6LcnmqYpAAAAAM8XLC2fxjNkvbRR4n_SbUZ_UV0H"; // Site key can be received from reCaptcha admin console
+    configuration.CaptchaVersion = CaptchaConfiguration.Version.V2; // V3 is also the option now
+});
 
 var app = builder.Build();
 

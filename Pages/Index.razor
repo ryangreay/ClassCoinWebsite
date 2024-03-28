@@ -490,23 +490,23 @@
     double tokenPrice = 0.0;
     bool positiveChange = true;
 
-    System.Timers.Timer timer = new System.Timers.Timer(60000);
+    //System.Timers.Timer timer = new System.Timers.Timer(60000);
     System.Timers.Timer timer2 = new System.Timers.Timer(2500);
 
     protected override void OnInitialized()
     {
-        timer.Elapsed += TimerElapsed;
-        timer.Start();
+        //timer.Elapsed += TimerElapsed;
+        //timer.Start();
 
         timer2.Elapsed += Timer2Elapsed;
     }
 
-    private void TimerElapsed(object sender, System.Timers.ElapsedEventArgs e)
-    {
+    //private void TimerElapsed(object sender, System.Timers.ElapsedEventArgs e)
+    //{
         //setTokenPrice();
 
         //InvokeAsync(StateHasChanged);
-    }
+    //}
 
     private void Timer2Elapsed(object sender, System.Timers.ElapsedEventArgs e)
     {
