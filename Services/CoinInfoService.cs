@@ -25,8 +25,7 @@ namespace CoinSite.Services
 
         public CoinInfoService()
         {
-            transactions = GetDonationTransfers();
-            classcoinPrice = GetTokenPrice();
+            transactions = GetDonationTransfers();           
         }
 
         public List<Transaction> GetDonationTransfers()
@@ -66,7 +65,7 @@ namespace CoinSite.Services
         }
 
         //positve 24 hr percent change makes the price green -> Tuple(price, positive 24hr change)
-        public Tuple<double, bool> GetTokenPrice()
+        public void SetClassCoinPrice()
         {
             double tokenPrice = 0.0;
             bool positiveChange = true;
@@ -86,7 +85,7 @@ namespace CoinSite.Services
                 positiveChange = Convert.ToDouble(data["24hrPercentChange"].ToString()) > 0;
             }
 
-            return new Tuple<double, bool>(tokenPrice, positiveChange);
+            classcoinPrice = new Tuple<double, bool>(tokenPrice, positiveChange);
         }
 
         public double GetEthereumRaised()

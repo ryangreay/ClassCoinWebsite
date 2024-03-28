@@ -14,8 +14,9 @@ builder.Services.AddScoped<CoinInfoService>();
 builder.Services.AddScoped<ClipboardService>();
 builder.Services.AddGoogleCaptcha(configuration =>
 {
-    configuration.ServerSideValidationRequired = true;
-    configuration.SiteKey = "6LcnmqYpAAAAAM8XLC2fxjNkvbRR4n_SbUZ_UV0H"; // Site key can be received from reCaptcha admin console
+    configuration.ServerSideValidationRequired = false;
+    //configuration.SiteKey = "6LfsLKcpAAAAAMiRgBWqEiNjdGSbVh65FDBaL6BL"; //localhost debug key
+    configuration.SiteKey = "6LcnmqYpAAAAAM8XLC2fxjNkvbRR4n_SbUZ_UV0H"; //classcoin.org key
     configuration.CaptchaVersion = CaptchaConfiguration.Version.V2; // V3 is also the option now
 });
 
